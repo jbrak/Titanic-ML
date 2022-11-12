@@ -1,0 +1,2 @@
+A decision tree algorithm that will predict who lives and who dies during the Destruction of the Titanic based off of data such as the sex, age and class of the passenger in question. The parameters of the model can be adjusted using the sliders below to show how the accurassy and model change accordingly.
+	

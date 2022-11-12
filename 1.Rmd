@@ -1,0 +1,95 @@
+---
+title: "Who Survives? - ML"
+output: html_notebook
+---
+
+Attempt to write a decision tree algorithm that will predict who survived and who died on the titanic. Using this [CSV](https://raw.githubusercontent.com/guru99-edu/R-Programming/master/titanic_data.csv) and this [tutorial](https://www.guru99.com/r-decision-trees.html#4). [Solution to Error in tutorial](https://community.rstudio.com/t/rpart-result-is-too-small-to-see/60702/4). [Assistance with NA's](http://naniar.njtierney.com/index.html) [pie chart tutorial](https://www.statmethods.net/graphs/pie.html)
+[more pie chart help](https://www.geeksforgeeks.org/side-by-side-pie-charts-in-r/)
+Import Libraries
+```{r}
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(rpart)
+library(rpart.plot)
+library(naniar)
+```
+
+Download Data
+```{r}
+set.seed(678)
+path <- 'https://raw.githubusercontent.com/guru99-edu/R-Programming/master/titanic_data.csv'
+titanic <-read.csv(path)
+head(titanic)
+```
+
+
+Data Wrangling
+```{r}
+titanic_clean <- titanic%>%
+  distinct %>%
+  select(-c(name, cabin, home.dest, x,ticket)) %>%
+  replace_with_na(replace = list(age = "?", parch = "?", sibsp = "?", fare = "?", sex = "?", survived = "?", pclass = "?", embarked = "?")) %>%
+  na.omit() %>%
+  mutate(pclass=factor(pclass, levels = c(1, 2, 3), labels = c('Upper', 'Middle', 'Lower')),
+         survived = factor(survived, levels = c(0,1), labels = c("Die","Survive")),
+         age = as.numeric(age),
+         fare = as.numeric(fare))
+
+set.seed(43)
+rows <- sample(nrow(titanic_clean))
+titanic_clean <- titanic_clean[rows,]
+
+titanic_train <- head(titanic_clean,800)
+titanic_test <- tail(titanic_clean,243)
+head(titanic_train)
+head(titanic_test)
+```
+
+Creating the model
+
+```{r}
+model <- rpart(survived~., data = titanic_train, method = 'class')
+```
+
+```{r}
+accurasy_test <- function(model) {
+  
+  prediction <- predict(model,titanic_test, type = "class")
+
+  results <- table(titanic_test$survived, prediction)
+  
+  positives <- c(results["Survive","Survive"], results["Die", "Survive"])
+  lbleP <- c("True   \nPositives\n   ", "   False\n   Positives\n   ")
+  percentage <- round(positives / sum(positives) *100)
+  lbleP <- paste(lbleP,percentage)
+  lbleP <- paste(lbleP,"%","   ", sep = "")
+  
+  negatives <- c(results["Die","Die"], results["Survive", "Die"])
+  lbleN <- c("True   \nNegatives   \n", " False\n Negatives\n  ")
+  percentage <- round(negatives / sum(negatives) *100)
+  lbleN <- paste(lbleN,percentage)
+  lbleN <- paste(lbleN,"%","   ", sep = "")
+  
+  rpart.plot(model, type = 1, extra = 106)
+  par(mfrow=c(1,2))
+  pie(positives, labels = lbleP,col=rainbow(2))
+  pie(negatives, labels = lbleN, col=rainbow(2))
+  
+  accuracy <- sum(diag(results)) / sum(results)
+  accuracy
+}
+
+
+accurasy_test(model)
+```
+
+```{r}
+control <- rpart.control(minsplit = 4,
+    minbucket = round(5/3),
+    maxdepth = 3,
+    cp = 0)
+model2 <- model <- rpart(survived~., data = titanic_train, method = 'class', control = control)
+
+accurasy_test(model2)
+```
