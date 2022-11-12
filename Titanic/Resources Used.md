@@ -3,6 +3,7 @@ My code can be found in [this](https://github.com/jbrak/Titanic-ML.git) GitHub r
 A visual explanation of how decision trees work and the bias variance tradeoff can be found at [this](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/)
 
 Key Resources Used:
+
 - [Data](https://raw.githubusercontent.com/guru99-edu/R-Programming/master/titanic_data.cs)
 - [Info About Data](https://towardsdatascience.com/machine-learning-with-the-titanic-dataset-7f6909e58280)
 - [Tutorial](https://www.guru99.com/r-decision-trees.html#4)

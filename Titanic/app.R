@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-#Import Librarys
+#Import Libraries
 library(shiny)
 library(dplyr)
 library(tidyr)
@@ -74,7 +74,7 @@ ui <- fluidPage(
 
     # Application title
     titlePanel("Who Survives? - ML"),
-    includeMarkdown("./Project Info.md"),
+    includeHTML("./Project-Info.html"),
     # Sidebar with a slider input for Parameters
     sidebarLayout(
         sidebarPanel(
@@ -98,7 +98,7 @@ ui <- fluidPage(
            plotOutput("resultsPlot")
         ),
 ),
-includeMarkdown("./Resources Used.md"),
+includeHTML("./Resources-Used.html"),
 )
 
 # Creating and Drawing the model
