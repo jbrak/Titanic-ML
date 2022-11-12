@@ -5,9 +5,10 @@ account: joseph-brakoniecki
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7602711
-bundleId: 6505751
+bundleId: 6506513
 url: https://joseph-brakoniecki.shinyapps.io/titanic/
-when: 1668244043.59188
-lastSyncTime: 1668244043.5919
+when: 1668268506.13097
+lastSyncTime: 1668268506.13098
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: Project Info.md|Resources Used.md
