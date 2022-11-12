@@ -1,5 +1,5 @@
 
-My code can be found in [this]() GitHub repository.
+My code can be found in [this](https://github.com/jbrak/Titanic-ML.git) GitHub repository.
 A visual explanation of how decision trees work and the bias variance tradeoff can be found at [this](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/)
 
 Key Resources Used:
