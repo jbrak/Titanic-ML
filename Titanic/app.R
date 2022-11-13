@@ -74,20 +74,20 @@ ui <- fluidPage(
 
     # Application title
     titlePanel("Who Survives? - ML"),
-    includeHTML("./Project-Info.html"),
+    markdown("A decision tree algorithm that will predict who lives and who dies during the Destruction of the Titanic based off of data such as the sex, age and class of the passenger in question. The parameters of the model can be adjusted using the sliders below to show how the accuracy and model change accordingly."),
     # Sidebar with a slider input for Parameters
     sidebarLayout(
         sidebarPanel(
-            sliderInput("mindepth",
-                        "Minimum Depth:",
+            sliderInput("maxdepth",
+                        "Maximum Depth:",
                         min = 1,
                         max = 30,
                         value = 3),
-            sliderInput("complexity",
-                        "Complexity:",
+            sliderInput("minsplit",
+                        "Minimum Node Size:",
                         min = 0,
-                        max = 0.05,
-                        value = 0),
+                        max = 799,
+                        value = 10),
             actionButton("reset", "Reset", width = "100%", alignment = "center"),
             h3(textOutput("accurasy"))
         ),
@@ -98,23 +98,34 @@ ui <- fluidPage(
            plotOutput("resultsPlot")
         ),
 ),
-includeHTML("./Resources-Used.html"),
+markdown("My code can be found in [this](https://github.com/jbrak/Titanic-ML.git) GitHub repository.
+A visual explanation of how decision trees work and the bias variance tradeoff can be found at [this](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/)
+
+Key Resources Used:
+
+- [Data](https://raw.githubusercontent.com/guru99-edu/R-Programming/master/titanic_data.cs)
+- [Info About Data](https://towardsdatascience.com/machine-learning-with-the-titanic-dataset-7f6909e58280)
+- [Tutorial](https://www.guru99.com/r-decision-trees.html#4)
+- [Solution to Error in Tutorial](https://community.rstudio.com/t/rpart-result-is-too-small-to-see/60702/4)
+- [Assistance with NA's](http://naniar.njtierney.com/index.html)
+- [Pie chart Tutorial](https://www.statmethods.net/graphs/pie.html)
+- [More Pie Chart Assistance](https://www.geeksforgeeks.org/side-by-side-pie-charts-in-r/)"),
 )
 
 # Creating and Drawing the model
 server <- function(input, output) {
     
-    observeEvent({input$mindepth | input$complexity},{
-        control <- rpart.control(minsplit = 10,
+    observeEvent({input$maxdepth | input$minsplit},{
+        control <- rpart.control(minsplit = input$minsplit,
                                  minbucket = round(5/3),
-                                 maxdepth = input$mindepth,
-                                 cp = input$complexity)
+                                 maxdepth = input$maxdepth,
+                                 cp = 0)
         values$model <- rpart(survived~., data = titanic_train, method = 'class', control = control)
     })
     
     observeEvent(input$reset,{
-        updateSliderInput(session = getDefaultReactiveDomain(),"mindepth",val = 3)
-        updateSliderInput(session = getDefaultReactiveDomain(), "complexity",val = 0)
+        updateSliderInput(session = getDefaultReactiveDomain(),"maxdepth",val = 3)
+        updateSliderInput(session = getDefaultReactiveDomain(), "minsplit",val = 10)
     })
     
     output$modelPlot <- renderPlot({
